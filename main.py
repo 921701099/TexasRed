@@ -1,14 +1,12 @@
 import time
 import colorama
-from colorama import Fore, Back, Style
+from colorama import Fore
 
 import threading
 import requests
 import random
 import string
 import names
-import subprocess
-
 import time
 
 from fake_useragent import UserAgent
