@@ -35,7 +35,7 @@ def menu():
         colorama.init()
         print(Fore.RED + title)
         print(Fore.WHITE)
-        print("1. Registration Flood (aka Phishkiller)\n")
+        print("1. HTTP Post Flood (aka Phishkiller)\n")
         print("2. Reverse Shell\n")
         choice = input("Select: ")
 
