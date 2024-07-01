@@ -2,6 +2,7 @@ import colorama
 from colorama import Fore
 
 from regspam import pkmain
+from revshell import revshmain
 
 Flag = True
 
@@ -40,9 +41,12 @@ def menu():
 
         if choice == "1":
             print("\n")
-            pkmain(return_to_menu)
+            pkmain(returnToMenu)
+        elif choice == "2":
+            print("\n")
+            revshmain(returnToMenu)
 
-def return_to_menu():
+def returnToMenu():
     print("\033[H\033[J")  
     menu()
 

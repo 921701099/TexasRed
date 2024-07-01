@@ -59,7 +59,4 @@ def pkmain(callback):
     print("Flood complete.  Back to menu...")
     time.sleep(3)
     callback()
-    print("\033[H\033[J")
-    menu() #cant call this
-
 
