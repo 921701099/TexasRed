@@ -121,7 +121,7 @@ genClient()
     if pyorexe == "1":
         with open(fileName, 'w') as file:
             file.write(genClient_code)
-        subprocess.run(['chmod', '+x', fileName])
+        os.chmod(fileName, 0o755)
 
     elif pyorexe == "2":
         with open(fileName, 'w') as file:
@@ -130,11 +130,12 @@ genClient()
 
         if result.returncode == 0:
             # Move the generated executable and clean up
-            if os.path.exists(f'dist/{os.path.splitext(fileName)[0]}.exe'):
-                shutil.move(f'dist/{os.path.splitext(fileName)[0]}.exe', f'./{os.path.splitext(fileName)[0]}.exe')
+            generated_name = os.path.splitext(fileName)[0] 
+            if os.path.exists(f'dist/{generated_name}'):
+                shutil.move(f'dist/{generated_name}', f'./{generated_name}')
                 shutil.rmtree('dist')
                 shutil.rmtree('build')
-                os.remove(os.path.splitext(fileName)[0] + '.spec')
+                os.remove(f'{generated_name}.spec')
                 os.remove(fileName)
                 print("Executable file successfully created.")
                 return
@@ -143,7 +144,7 @@ genClient()
                 return
         else:
             print("Failed to create executable file. Error output:")
-            print(result.stderr)
+            print(result.stderr.decode('utf-8'))
             return
 
 if __name__ == "__main__":
