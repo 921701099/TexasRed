@@ -60,3 +60,8 @@ def pkmain(callback):
     time.sleep(3)
     callback()
 
+def exit():
+    exit()
+    
+if __name__ == "__main__":
+    pkmain(exit)
