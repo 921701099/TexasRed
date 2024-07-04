@@ -37,7 +37,7 @@ def menu():
         print(Fore.WHITE)
         print("1. HTTP Post Flood (aka Phishkiller)\n")
         print("2. Reverse Shell\n")
-        choice = input("Select: ")
+        choice = input("Select (q to quit): ")
 
         if choice == "1":
             print("\n")
@@ -45,6 +45,8 @@ def menu():
         elif choice == "2":
             print("\n")
             revshmain(returnToMenu)
+        elif choice.lower() == "q":
+            exit()
 
 def returnToMenu():
     print("\033[H\033[J")  
