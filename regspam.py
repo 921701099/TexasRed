@@ -4,6 +4,7 @@ import random
 import string
 import names
 import time
+from proxycheck import proxycheckstart
 
 from fake_useragent import UserAgent
 
@@ -31,14 +32,19 @@ def generate_random_password():
 
 def send_posts(url, floodlength):
     start_time = time.time()
+    with open("workin_proxy.txt", "r") as f:
+        proxies = f.read().split("\n")
+
     while time.time() - start_time < floodlength:
+        index = int((time.time() - start_time) % len(proxies))
         email = generate_random_email()
         password = generate_random_password()
         data = {"a": email, "az": password}
         ua = UserAgent()
         user_agent = ua.random
         headers = {'User-Agent': user_agent}
-        response = requests.post(url, data=data, headers=headers)
+        response = requests.post(url, data=data, headers=headers, proxies={"http": proxies[index],"https": proxies[index]})
+        print(f"Proxy using: {proxies[index]}")
         print(f"Email: {email}, Password: {password}, Status Code: {response.status_code}, headers: {user_agent}")
 
 def pkmain(callback):
@@ -57,3 +63,5 @@ def pkmain(callback):
     print("Flood complete.  Back to menu...")
     time.sleep(3)
     callback()
+
+
